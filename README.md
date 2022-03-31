@@ -1,5 +1,5 @@
 # C++ Runtime Benchmark Test
-A command line utility tool that test's your C++ runtime environment. The program will make your computer undergo a series of 5 different benchmark diagnostics.
+A command line utility tool that tests your C++ runtime environment. The program will make your computer undergo a series of 5 different benchmark diagnostics.
 
 <h2>How to use?</h2>
 This program is designed to be used as a CLI utility tool. That means you cannot run the .exe file without using command prompt. The basic startup command for this program is
