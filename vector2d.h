@@ -11,20 +11,16 @@
 // 'LICENSE.txt', which is part of the following source code file.
 
 #pragma once
-#pragma optimize("g", on)
 
-#ifndef _VECTOR2D_H
-#define _VECTOR2D_H
+#ifndef VECTOR2D_H
+#define VECTOR2D_H
 
 #include <iostream>
 #include <vector>
-#include <string>
 #include <map>
-#include <algorithm>
-#include <utility>
 
 template <class _Ty>
-class Vector2d
+class Vector2d final
 {
 public:
 	Vector2d<_Ty>(size_t _rows, size_t _columns)
@@ -32,23 +28,25 @@ public:
 	{
 		std::vector<std::vector<_Ty>> _vector;
 
-		for (int i = 0; i < _rows; i++)
+		for (size_t i = 0; i < _rows; i++)
 		{
 			std::vector<_Ty> _col_vector;
 
-			for (int j = 0; j < _columns; j++)
+			for (size_t j = 0; j < _columns; j++)
 			{
-				if (typeid(_Ty) == typeid(std::string) || typeid(_Ty) == typeid(char))
+				if (typeid(_Ty) == typeid(std::string) || typeid(_Ty) == typeid(char)) 
 					_col_vector.push_back('0');
 				else
 					_col_vector.push_back(NULL);
 			}
+
 			_vector.push_back(_col_vector);
 		}
+
 		this->m_data = _vector;
 	}
 
-	virtual ~Vector2d()
+	~Vector2d()
 	{
 		this->m_data.clear();
 		this->m_data.shrink_to_fit();
@@ -62,7 +60,7 @@ public:
 		{
 			raw_s_ += "{ ";
 
-			for (auto j : i) 
+			for (auto j : i)
 				raw_s_ = raw_s_ + std::to_string(j) + ", ";
 
 			raw_s_ += "} ";
@@ -113,12 +111,12 @@ public:
 		return this->m_data[ypos][xpos];
 	}
 
-	void rotate_square(int degrees)
+	void rotate_square(unsigned short degrees)
 	{
 		if (m_rows != m_columns)
-			throw std::exception("Vector2d object is not a square matrix.");
+			throw std::runtime_error("Vector2d object is not a square matrix.");
 
-		size_t _acw_4f = 0;
+		size_t _acw_4f;
 		const size_t N = m_data.size();
 
 		switch (degrees)
@@ -133,17 +131,16 @@ public:
 			_acw_4f = 3;
 			break;
 		default:
-			std::cerr << "Cannot rotate Vector2d object by " << degrees << " degrees.";
-			exit(2);
+			throw std::runtime_error("Cannot rotate Vector2d object by " + std::to_string(degrees) + " degrees.");
 		}
 
-		for (int k = 0; k < _acw_4f; k++)
+		for (size_t k = 0; k < _acw_4f; k++)
 		{
-			for (int x = 0; x < N / 2; x++)
+			for (size_t x = 0; x < N / 2; x++)
 			{
-				for (int y = x; y < N - x - 1; y++)
+				for (size_t y = x; y < N - x - 1; y++)
 				{
-					int tmp = m_data[x][y];
+					_Ty tmp = m_data[x][y];
 					m_data[x][y] = m_data[y][N - 1 - x];
 					m_data[y][N - 1 - x] = m_data[N - 1 - x][N - 1 - y];
 					m_data[N - 1 - x][N - 1 - y] = m_data[N - 1 - y][x];
@@ -153,77 +150,77 @@ public:
 		}
 	}
 
-	friend Vector2d<_Ty> operator+(Vector2d<_Ty>& __vec_2d_1, Vector2d<_Ty>& __vec_2d_2)
+	friend Vector2d<_Ty> operator+(Vector2d<_Ty>& _vec_2d_1, Vector2d<_Ty>& _vec_2d_2)
 	{
-		Vector2d<_Ty> res_vec2d = Vector2d<_Ty>(__vec_2d_1.get_rows(), __vec_2d_1.get_columns());
+		Vector2d<_Ty> res_vec2d = Vector2d<_Ty>(_vec_2d_1.get_rows(), _vec_2d_1.get_columns());
 
-		for (int i = 0; i < __vec_2d_1.get_rows(); i++)
-			for (int j = 0; j < __vec_2d_1.get_columns(); j++)
-				res_vec2d.set_value(i, j, __vec_2d_1.value_at(i, j) + __vec_2d_2.value_at(i, j));
+		for (size_t i = 0; i < _vec_2d_1.get_rows(); i++)
+			for (size_t j = 0; j < _vec_2d_1.get_columns(); j++)
+				res_vec2d.set_value(i, j, _vec_2d_1.value_at(i, j) + _vec_2d_2.value_at(i, j));
 
 		return res_vec2d;
 	}
 
-	void operator+=(Vector2d<_Ty>& __vec_2d_2)
+	void operator+=(Vector2d<_Ty>& _vec_2d_2)
 	{
 		Vector2d<_Ty> res_vec2d = Vector2d<_Ty>(this->get_rows(), this->get_columns());
 
-		for (int i = 0; i < this->get_rows(); i++)
-			for (int j = 0; j < this->get_columns(); j++)
-				res_vec2d.set_value(i, j, this->value_at(i, j) + __vec_2d_2.value_at(i, j));
+		for (size_t i = 0; i < this->get_rows(); i++)
+			for (size_t j = 0; j < this->get_columns(); j++)
+				res_vec2d.set_value(i, j, this->value_at(i, j) + _vec_2d_2.value_at(i, j));
 
-		for (int i = 0; i < this->get_rows(); i++)
-			for (int j = 0; j < this->get_columns(); j++)
+		for (size_t i = 0; i < this->get_rows(); i++)
+			for (size_t j = 0; j < this->get_columns(); j++)
 				this->m_data[i][j] = res_vec2d.value_at(i, j);
 	}
 
-	friend Vector2d<_Ty> operator-(Vector2d<_Ty>& __vec_2d_1, Vector2d<_Ty>& __vec_2d_2)
+	friend Vector2d<_Ty> operator-(Vector2d<_Ty>& _vec_2d_1, Vector2d<_Ty>& _vec_2d_2)
 	{
-		Vector2d<_Ty> res_vec2d = Vector2d<_Ty>(__vec_2d_1.get_rows(), __vec_2d_1.get_columns());
+		Vector2d<_Ty> res_vec2d = Vector2d<_Ty>(_vec_2d_1.get_rows(), _vec_2d_1.get_columns());
 
-		for (int i = 0; i < __vec_2d_1.get_rows(); i++)
-			for (int j = 0; j < __vec_2d_1.get_columns(); j++)
-				res_vec2d.set_value(i, j, __vec_2d_1.value_at(i, j) - __vec_2d_2.value_at(i, j));
+		for (size_t i = 0; i < _vec_2d_1.get_rows(); i++)
+			for (size_t j = 0; j < _vec_2d_1.get_columns(); j++)
+				res_vec2d.set_value(i, j, _vec_2d_1.value_at(i, j) - _vec_2d_2.value_at(i, j));
 
 		return res_vec2d;
 	}
 
-	void operator-=(Vector2d<_Ty>& __vec_2d_2)
+	void operator-=(Vector2d<_Ty>& _vec_2d_2)
 	{
 		Vector2d<_Ty> res_vec2d = Vector2d<_Ty>(this->get_rows(), this->get_columns());
 
-		for (int i = 0; i < this->get_rows(); i++)
-			for (int j = 0; j < this->get_columns(); j++)
-				res_vec2d.set_value(i, j, this->value_at(i, j) - __vec_2d_2.value_at(i, j));
+		for (size_t i = 0; i < this->get_rows(); i++)
+			for (size_t j = 0; j < this->get_columns(); j++)
+				res_vec2d.set_value(i, j, this->value_at(i, j) - _vec_2d_2.value_at(i, j));
 
-		for (int i = 0; i < this->get_rows(); i++)
-			for (int j = 0; j < this->get_columns(); j++)
+		for (size_t i = 0; i < this->get_rows(); i++)
+			for (size_t j = 0; j < this->get_columns(); j++)
 				this->m_data[i][j] = res_vec2d.value_at(i, j);
 	}
 
-	Vector2d* operator=(Vector2d<_Ty> __vec_2d_2)
+	Vector2d& operator=(Vector2d<_Ty> _vec_2d_2)
 	{
-		this->m_data = __vec_2d_2.m_data;
-		return this;
+		this->m_data = _vec_2d_2.m_data;
+		return *this;
 	}
 
-	Vector2d<_Ty> sc_mutiply(_Ty scalar)
+	Vector2d<_Ty> scmutiply(_Ty scalar)
 	{
 		Vector2d<_Ty> res = Vector2d<_Ty>(this->m_rows, this->m_columns);
 
-		for (int i = 0; i < this->m_rows; i++)
-			for (int j = 0; j < this->m_columns; j++)
+		for (size_t i = 0; i < this->m_rows; i++)
+			for (size_t j = 0; j < this->m_columns; j++)
 				res.m_data[i][j] = this->m_data[i][j] * scalar;
 
 		return res;
 	}
 
-	Vector2d<_Ty> sc_divide(_Ty scalar)
+	Vector2d<_Ty> scdivide(_Ty scalar)
 	{
 		Vector2d<_Ty> res = Vector2d<_Ty>(this->m_rows, this->m_columns);
 
-		for (int i = 0; i < this->m_rows; i++)
-			for (int j = 0; j < this->m_columns; j++)
+		for (size_t i = 0; i < this->m_rows; i++)
+			for (size_t j = 0; j < this->m_columns; j++)
 				res.m_data[i][j] = this->m_data[i][j] * scalar;
 
 		return res;
@@ -233,22 +230,23 @@ public:
 	{
 		std::vector<std::vector<_Ty>> _vector;
 
-		for (int i = 0; i < m_columns; i++)
+		for (size_t i = 0; i < m_columns; i++)
 		{
 			std::vector<_Ty> _col_vector;
 
-			for (int j = 0; j < m_rows; j++)
+			for (size_t j = 0; j < m_rows; j++)
 			{
-				if ((typeid(_Ty) == typeid(std::string)) || (typeid(_Ty) == typeid(char)))
+				if (typeid(_Ty) == typeid(std::string) || typeid(_Ty) == typeid(char))
 					_col_vector.push_back('0');
 				else
 					_col_vector.push_back(NULL);
 			}
+
 			_vector.push_back(_col_vector);
 		}
 
-		for (int i = 0; i < m_columns; i++)
-			for (int j = 0; j < m_rows; j++)
+		for (size_t i = 0; i < m_columns; i++)
+			for (size_t j = 0; j < m_rows; j++)
 				_vector[j][i] = m_data[i][j];
 
 		Vector2d<_Ty> res = Vector2d<_Ty>(m_columns, m_rows);
@@ -256,16 +254,16 @@ public:
 		return res;
 	}
 
-	std::pair<int, int> search_for(_Ty __Val_)
+	std::pair<int, int> search_for(_Ty Val)
 	{
 		std::pair<int, int> _loc_;
 		size_t m = 0; size_t n = 0;
 
-		for (int i = 0; i < this->m_rows; i++)
+		for (size_t i = 0; i < this->m_rows; i++)
 		{
-			for (int j = 0; j < this->m_columns; j++)
+			for (size_t j = 0; j < this->m_columns; j++)
 			{
-				if (m_data[i][j] == __Val_)
+				if (m_data[i][j] == Val)
 				{
 					_loc_.first = j;
 					_loc_.second = i;
@@ -279,86 +277,7 @@ public:
 		return _loc_;
 	}
 
-	_Ty det() const
-	{
-		if (m_rows != m_columns)
-			throw std::exception("Vector2d object is not a square matrix.");
 
-		std::vector<std::vector<_Ty>> Matrix = m_data;
-		_Ty deter = NULL;
-
-		if (Matrix.size() == 1)
-			return Matrix[0][0];
-		
-		if (Matrix.size() == 2)
-		{
-			deter = (Matrix[0][0] * Matrix[1][1] - Matrix[0][1] * Matrix[1][0]);
-			return deter;
-		}
-
-		for (int p = 0; p < Matrix[0].size(); p++)
-		{
-			std::vector<std::vector<_Ty>> TempMatrix;
-
-			for (int i = 1; i < Matrix.size(); i++)
-			{
-				std::vector<_Ty> TempRow;
-
-				for (int j = 0; j < Matrix[i].size(); j++)
-				{
-					if (j != p)
-						TempRow.push_back(Matrix[i][j]);
-				}
-
-				if (TempRow.size() > 0)
-				{
-					TempMatrix.push_back(TempRow);
-				}
-			}
-			deter = deter + Matrix[0][p] * std::pow(-1, p) * det(TempMatrix);
-		}
-		return deter;
-	}
-
-private:
-	_Ty det(std::vector<std::vector<_Ty>> Matrix) const
-	{
-		if (m_rows != m_columns)
-			throw std::exception("Vector2d object is not a square matrix.");
-
-		_Ty deter = NULL;
-
-		if (Matrix.size() == 1)
-			return Matrix[0][0];
-
-		if (Matrix.size() == 2)
-		{
-			deter = (Matrix[0][0] * Matrix[1][1] - Matrix[0][1] * Matrix[1][0]);
-			return deter;
-		}
-		for (int p = 0; p < Matrix[0].size(); p++)
-		{
-			std::vector<std::vector<_Ty>> TempMatrix;
-
-			for (int i = 1; i < Matrix.size(); i++)
-			{
-				std::vector<_Ty> TempRow;
-
-				for (int j = 0; j < Matrix[i].size(); j++)
-				{
-					if (j != p)
-						TempRow.push_back(Matrix[i][j]);
-				}
-
-				if (TempRow.size() > 0)
-					TempMatrix.push_back(TempRow);
-			}
-			deter = deter + Matrix[0][p] * std::pow(-1, p) * det(TempMatrix);
-		}
-		return deter;
-	}
-
-public:
 	_Ty trace() const /* The sum along the diagonal of the matrix. */
 	{
 		if (m_rows != m_columns)
@@ -366,21 +285,21 @@ public:
 
 		_Ty sum = NULL;
 
-		for (int i = 0; i < m_rows; i++)
+		for (size_t i = 0; i < m_rows; i++)
 			sum += m_data[i][i];
 
 		return sum;
 	}
 
-	double norm() const /* Norm is the square root of the sum of all the elements. */
+	[[nodiscard]] double norm() const /* Norm is the square root of the sum of all the elements. */
 	{
 		if (m_rows != m_columns)
 			throw std::exception("Vector2d object is not a square matrix.");
 
 		_Ty sum = NULL;
 
-		for (int i = 0; i < m_rows; i++)
-			for (int j = 0; j < m_rows; j++)
+		for (size_t i = 0; i < m_rows; i++)
+			for (size_t j = 0; j < m_rows; j++)
 				sum += m_data[i][j] * m_data[i][j];
 
 		return sqrt(sum);
@@ -392,25 +311,11 @@ public:
 		std::map<_Ty, std::vector<_Ty>> t_55g_Heap;
 		size_t rows = 0;
 
-		for (auto& i : m_data)
-		{
-			std::sort(i.begin(), i.end());
-			t_55g_Heap.insert({ i[0], i });
-		}
-
-#if (__cplusplus >= 201703L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L) && (_MSC_VER >= 1913))
-		for (auto const& [key, val] : t_55g_Heap)
-		{
-			sort_matrix_7f.m_data[rows] = val;
-			rows++;
-		}
-#else
 		for (const auto& i : t_55g_Heap)
 		{
 			sort_matrix_7f.m_data[rows] = i.second;
 			rows++;
 		}
-#endif // (__cplusplus >= 201703L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L) && (_MSC_VER >= 1913))
 
 		return sort_matrix_7f;
 	}
@@ -421,25 +326,11 @@ public:
 		std::map<_Ty, std::vector<_Ty>, std::greater<_Ty>> t_55g_Heap_Rev;
 		size_t rows = 0;
 
-		for (auto& i : m_data)
-		{
-			std::sort(i.begin(), i.end(), std::greater<_Ty>());
-			t_55g_Heap_Rev.insert({ i[0], i });
-		}
-
-#if (__cplusplus >= 201703L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L) && (_MSC_VER >= 1913))
-		for (auto const& [key, val] : t_55g_Heap_Rev)
-		{
-			sort_matrix_7f.m_data[rows] = val;
-			rows++;
-		}
-#else
 		for (const auto& i : t_55g_Heap_Rev)
 		{
 			sort_matrix_7f.m_data[rows] = i.second;
 			rows++;
 		}
-#endif // (__cplusplus >= 201703L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L) && (_MSC_VER >= 1913))
 
 		return sort_matrix_7f;
 	}
@@ -450,4 +341,4 @@ private:
 	std::vector<std::vector<_Ty>> m_data;
 };
 
-#endif // _VECTOR2D_H
+#endif // VECTOR2D_H

@@ -48,12 +48,9 @@ int main(/*const int argc, char* argv[]*/)
     ///////////////////////////     BEGIN DIAGNOSTICS       /////////////////////////////////////////////////////
 
     const auto startI = CLOCKTIME_NOW;
-
-    
-
+    Tests::integer_operations(useAllCores);
     const auto stopI = CLOCKTIME_NOW;
     std::cout << "TEST I -       Integer Operations (" + modeStr + ") :  " << DURATION(startI, stopI) << " ms\n";
-
 
     const auto startII = CLOCKTIME_NOW;
     // vector i/o
@@ -61,15 +58,13 @@ int main(/*const int argc, char* argv[]*/)
     std::cout << "TEST II - Array Searching & Sorting  (" + modeStr + ") :  " << DURATION(startII, stopII) << " ms\n";
 
     const auto startIII = CLOCKTIME_NOW;
-    // parallel multithreading -- subject to change
     const auto stopIII = CLOCKTIME_NOW;
     std::cout << "TEST III - Console I/O String Stream  (" + modeStr + ") :  " << DURATION(startIII, stopIII) << " ms\n";
 
     const auto startIV = CLOCKTIME_NOW;
-    Tests::prime(useAllCores);
+    Tests::console_io(useAllCores);
     const auto stopIV = CLOCKTIME_NOW;
-    std::cout << "TEST IV - Prime Number Generation (" + modeStr + ") :  " << DURATION(startIV, stopIV) << " ms\n";
-
+    std::cout << "TEST IV - File I/O String Stream (" + modeStr + ") :  " << DURATION(startIV, stopIV) << " ms\n";
 
     const auto startV = CLOCKTIME_NOW;
     Tests::matrix_operations(useAllCores);
@@ -78,16 +73,15 @@ int main(/*const int argc, char* argv[]*/)
 
     //////////////////////////////////  END DIAGNOSTICS    /////////////////////////////////////////////////////////
 
-
     std::string decision;
     const auto total = DURATION(startI, stopI) + DURATION(startII, stopII)
 		+ DURATION(startIII, stopIII) + DURATION(startIV, stopIV) + DURATION(startV, stopV);
 
-    if (total <= 1000)
+    if (total / 5 <= 1000)
         decision = "Excellent";
-    else if (total <= 5000)
+    else if (total / 5 <= 5000)
         decision = "Good";
-    else if (total <= 9999)
+    else if (total / 5 <= 9999)
         decision = "Fair";
     else
         decision = "Poor";

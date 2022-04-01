@@ -8,7 +8,7 @@ void Tests::integer_operations(bool multithreading)
     }
     else
     {
-
+        
     }
 }
 
@@ -28,47 +28,23 @@ void Tests::console_io(bool multithreading)
 {
     if (multithreading)
     {
-	    
-    }
-    else
-    {
-	    
-    }
-}
-
-bool is_prime(int n)
-{
-    if (n % 2 == 0)
-        return false;
-    const int r = static_cast<int>(sqrt(n));
-    for (int i = 3; i <= r; i += 2)
-        if (n % 2 == 0)
-            return false;
-    return true;
-}
-
-int next_prime(int n)
-{
-    do n++; while (!is_prime(n));
-    return n;
-}
-
-void Tests::prime(bool multithreading)
-{
-    if (multithreading)
-    {
-
-    }
-    else
-    {
-        std::vector<int> primes;
-        for (int i = 0; i < 1 << 30; i = next_prime(i))
+        std::ofstream out{ "NUL" };
+        concurrency::parallel_for(0ULL, 999999ULL, [&](size_t i)
         {
-            primes.emplace_back(i);
-            if (primes.size() >= 1 << 16)
-                primes.clear();
-        }
-            
+            out << 36969 * (i & 65535) + (i >> 16) << 16;
+            out.flush();
+        });
+        out.close();
+    }
+    else
+    {
+        std::ofstream out{ "NUL" };
+	    for (size_t i = 0; i < 9999999; i++)
+	    {
+            out << 36969 * (i & 65535) + (i >> 16) << 16;
+            out.flush();
+	    }
+        out.close();
     }
 }
 
@@ -76,33 +52,37 @@ void Tests::matrix_operations(bool multithreading)
 {
     if (multithreading)
     {
-        Vector2d<long> matrix = Vector2d<long>(9, 9);
+        Vector2d<unsigned long long> matrix = Vector2d<unsigned long long>(100, 100);
 
-        concurrency::parallel_for(0ULL, matrix.get_rows(), [&](size_t i)
+        concurrency::parallel_for(0ULL, matrix.get_rows(), [&](const size_t i)
         {
-        	concurrency::parallel_for(0ULL, matrix.get_columns(), [&](size_t j)
+        	concurrency::parallel_for(0ULL, matrix.get_columns(), [&](const size_t j)
         	{
-                matrix.set_value(i, j, static_cast<int>(i) << static_cast<int>(j) ^ 0x1DFAL);
+                matrix.set_value(i, j, i + j * i - j & 0x6ADF9B27ULL << 18000 * (i & 0xFFFF) + (j >> 0xF) & 0xFFFF);
+                matrix.rotate_square(270);
                 matrix.transpose();
-                matrix.rotate_square(90);
-                matrix.sc_divide(sin(cosh(exp(log10l(i * j - i + j)))));
-                matrix.sc_mutiply(matrix.trace() * i - j * i * matrix.det() + i * j - i + j);
+                matrix.scmutiply(log10l(i - j * matrix.value_at(i, j) + j * i) + matrix.norm());
+                matrix.scdivide(matrix.trace() * asinhl(i - j + i * matrix.value_at(i, j)) + coshl(matrix.norm()));
+                matrix.unique_sort();
+                matrix.unique_rsort();
         	});
         });
     }
     else
     {
-        Vector2d<long> matrix = Vector2d<long>(9, 9);
+        Vector2d<unsigned long long> matrix = Vector2d<unsigned long long>(100, 100);
 
         for (size_t i = 0; i < matrix.get_rows(); i++)
         {
             for (size_t j = 0; j < matrix.get_columns(); j++)
             {
-                matrix.set_value(i, j, static_cast<int>(i) << static_cast<int>(j) ^ 0x1DFAL);
+                matrix.set_value(i, j, i + j * i - j & 0x6ADF9B27ULL << 18000 * (i & 0xFFFF) + (j >> 0xF) & 0xFFFF);
+                matrix.rotate_square(270);
                 matrix.transpose();
-                matrix.rotate_square(90);
-                matrix.sc_divide(sin(cosh(exp(log10l(i * j - i + j)))));
-                matrix.sc_mutiply(matrix.trace() * i - j * i * matrix.det() + i * j - i + j);
+                matrix = matrix.scmutiply(log10l(i - j * matrix.value_at(i, j) + j * i) + matrix.norm());
+                matrix = matrix.scdivide(matrix.trace() * asinhl(i - j + i * matrix.value_at(i, j)) + coshl(matrix.norm()));
+                matrix = matrix.unique_sort();
+                matrix = matrix.unique_rsort();
             }
         }
     }
