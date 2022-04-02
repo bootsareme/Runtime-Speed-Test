@@ -23,15 +23,15 @@ void printhelpManual()
 					"                             /parallel :: Enables use of multiple logical cores on the processor (if supported). \n";
 }
 
-int main(/*const int argc, char* argv[]*/)
+int main(const int argc, char* argv[])
 {
-    //if (argv[1] == std::string("/help")) 
+    if (argv[1] == std::string("/help")) 
     {
         printhelpManual();
-    //    return 0;
+        return 0;
     }
 
-    const bool useAllCores = false;//argv[1] == std::string("/parallel");
+    const bool useAllCores = argv[1] == std::string("/parallel");
     std::string modeStr = "Single Threaded";
 
     if (useAllCores)
@@ -48,28 +48,29 @@ int main(/*const int argc, char* argv[]*/)
     ///////////////////////////     BEGIN DIAGNOSTICS       /////////////////////////////////////////////////////
 
     const auto startI = CLOCKTIME_NOW;
-    Tests::integer_operations(useAllCores);
+    Tests::backtracking_nqueens(useAllCores);
     const auto stopI = CLOCKTIME_NOW;
-    std::cout << "TEST I -       Integer Operations (" + modeStr + ") :  " << DURATION(startI, stopI) << " ms\n";
+    std::cout << "TEST I -       Recursive Backtracking (" + modeStr + ")  :  " << DURATION(startI, stopI) << " ms\n";
 
     const auto startII = CLOCKTIME_NOW;
-    // vector i/o
+    Tests::integer_operations(useAllCores);
     const auto stopII = CLOCKTIME_NOW;
-    std::cout << "TEST II - Array Searching & Sorting  (" + modeStr + ") :  " << DURATION(startII, stopII) << " ms\n";
+    std::cout << "TEST II - Log/Trig Modulo Aggregation (" + modeStr + ")  :  " << DURATION(startII, stopII) << " ms\n";
 
     const auto startIII = CLOCKTIME_NOW;
+    Tests::array_search_sort(useAllCores);
     const auto stopIII = CLOCKTIME_NOW;
-    std::cout << "TEST III - Console I/O String Stream  (" + modeStr + ") :  " << DURATION(startIII, stopIII) << " ms\n";
+    std::cout << "TEST III -  Array Searching & Sorting (" + modeStr + ")  :  " << DURATION(startIII, stopIII) << " ms\n";
 
     const auto startIV = CLOCKTIME_NOW;
     Tests::console_io(useAllCores);
     const auto stopIV = CLOCKTIME_NOW;
-    std::cout << "TEST IV - File I/O String Stream (" + modeStr + ") :  " << DURATION(startIV, stopIV) << " ms\n";
+    std::cout << "TEST IV -      File I/O String Stream (" + modeStr + ")  :  " << DURATION(startIV, stopIV) << " ms\n";
 
     const auto startV = CLOCKTIME_NOW;
     Tests::matrix_operations(useAllCores);
     const auto stopV = CLOCKTIME_NOW;
-    std::cout << "TEST V - Complex Matrix Transforms (" + modeStr + ") :  " << DURATION(startV, stopV) << " ms\n";
+    std::cout << "TEST V -    Complex Matrix Transforms (" + modeStr + ")  :  " << DURATION(startV, stopV) << " ms\n";
 
     //////////////////////////////////  END DIAGNOSTICS    /////////////////////////////////////////////////////////
 
@@ -77,14 +78,28 @@ int main(/*const int argc, char* argv[]*/)
     const auto total = DURATION(startI, stopI) + DURATION(startII, stopII)
 		+ DURATION(startIII, stopIII) + DURATION(startIV, stopIV) + DURATION(startV, stopV);
 
-    if (total / 5 <= 1000)
-        decision = "Excellent";
-    else if (total / 5 <= 5000)
-        decision = "Good";
-    else if (total / 5 <= 9999)
-        decision = "Fair";
-    else
-        decision = "Poor";
+    if (useAllCores)
+    {
+        if (total / 5 <= 5000)
+            decision = "Excellent";
+        else if (total / 5 <= 10000)
+            decision = "Good";
+        else if (total / 5 <= 20000)
+            decision = "Fair";
+        else
+            decision = "Poor";
+    }
+	else
+    {
+        if (total / 5 <= 5000)
+            decision = "Excellent";
+        else if (total / 5 <= 10000)
+            decision = "Good";
+        else if (total / 5 <= 30000)
+            decision = "Fair";
+        else
+            decision = "Poor";
+    }
 
     std::cout << "\n=======================\n";
     std::cout << "   BENCHMARK RESULTS\n";

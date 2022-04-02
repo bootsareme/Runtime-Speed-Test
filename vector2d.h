@@ -52,7 +52,7 @@ public:
 		this->m_data.shrink_to_fit();
 	}
 
-	std::string get_rawstring() const
+	[[nodiscard]] std::string get_rawstring() const
 	{
 		std::string raw_s_ = "{ ";
 
@@ -81,12 +81,12 @@ public:
 		}
 	}
 
-	size_t get_rows() const
+	[[nodiscard]] size_t get_rows() const
 	{
 		return this->m_rows;
 	}
 
-	size_t get_columns() const
+	[[nodiscard]] size_t get_columns() const
 	{
 		return this->m_columns;
 	}
@@ -96,7 +96,7 @@ public:
 		this->m_data[ypos][xpos] = value;
 	}
 
-	std::vector<std::vector<_Ty>> get_rawdata() const
+	[[nodiscard]] std::vector<std::vector<_Ty>> get_rawdata() const
 	{
 		return this->m_data;
 	}
@@ -278,10 +278,10 @@ public:
 	}
 
 
-	_Ty trace() const /* The sum along the diagonal of the matrix. */
+	[[nodiscard]] _Ty trace() const /* The sum along the diagonal of the matrix. */
 	{
 		if (m_rows != m_columns)
-			throw std::exception("Vector2d object is not a square matrix.");
+			throw std::runtime_error("Vector2d object is not a square matrix.");
 
 		_Ty sum = NULL;
 
@@ -294,7 +294,7 @@ public:
 	[[nodiscard]] double norm() const /* Norm is the square root of the sum of all the elements. */
 	{
 		if (m_rows != m_columns)
-			throw std::exception("Vector2d object is not a square matrix.");
+			throw std::runtime_error("Vector2d object is not a square matrix.");
 
 		_Ty sum = NULL;
 
