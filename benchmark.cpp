@@ -106,7 +106,7 @@ int main(const int argc, char* argv[])
     std::cout << "=======================\n\n";
     std::cout << " Total Diagnosis Time  :  " << total << " ms\n";
     std::cout << "  Average Test Length  :  " << total / 5 << " ms\n";
-    std::cout << "CPU and Memory Health  :  " << decision;
+    std::cout << "CPU and Memory Speed   :  " << decision;
     std::cout << "\n\n====================\n";
     std::cout << "   CPU & RAM INFO\n";
     std::cout << "====================\n\n";
