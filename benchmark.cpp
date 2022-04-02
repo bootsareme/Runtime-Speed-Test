@@ -45,8 +45,6 @@ int main(const int argc, char* argv[])
     std::cout << "\n\n==============================\n";
     std::cout << "   RUNNING DIAGNOSTIC TESTS\n==============================\n\n";
 
-    ///////////////////////////     BEGIN DIAGNOSTICS       /////////////////////////////////////////////////////
-
     const auto startI = CLOCKTIME_NOW;
     Tests::backtracking_nqueens(useAllCores);
     const auto stopI = CLOCKTIME_NOW;
@@ -71,8 +69,6 @@ int main(const int argc, char* argv[])
     Tests::matrix_operations(useAllCores);
     const auto stopV = CLOCKTIME_NOW;
     std::cout << "TEST V -    Complex Matrix Transforms (" + modeStr + ")  :  " << DURATION(startV, stopV) << " ms\n";
-
-    //////////////////////////////////  END DIAGNOSTICS    /////////////////////////////////////////////////////////
 
     std::string decision;
     const auto total = DURATION(startI, stopI) + DURATION(startII, stopII)
