@@ -12,10 +12,10 @@ void printhelpManual()
 	std::cout << "     C++ RUNTIME BENCHMARK TEST     ::     Diagnostic Tool by bootsareme\n";
 	std::cout << "--------------------------------------------------------------------------------\n\n";
 	std::cout << "This diagnostic tool will calculate your computer's execution speed. "
-					"It will perform a series of 5 tests in ascending difficulty and return"
-					"the results of each test in milliseconds. This diagnostic tool will only"
-					" calculate your computer's runtime speed as compilation speed will vary between software. "
-					"At the end of the diagnostic, this program will give you a CPU & Memory Health Score. "
+					"It will perform a series of 5 tests in ascending difficulty and return "
+					"the results of each test in milliseconds. This diagnostic tool will only "
+					"calculate your computer's runtime speed as compilation speed will vary between software. "
+					"At the end of the diagnostic, this program will give you a CPU & Memory Speed Score. "
 					"The score is meant for diagnostic purposes and SHOULD NOT SUBSITUTE FOR PROFESSIONAL ADVICE. "
 					"This program MUST be executed via a CLI (see below for CLI options).\n\n";
 	std::cout << "::\n:: Command Line Options :   benchmark.exe --start\n::\n"
