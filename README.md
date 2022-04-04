@@ -12,4 +12,4 @@ From there, you can follow the instructions within the program. Use **benchmark 
 Go to the "release" tab and download the .exe file from there. The binary will be a standalone executable without any setup or installation required.
 
 <h2>Building</h2>
-To build this benchmark, you must have Visual Studio 2019+ with MSVC build tools installed. You may clone the repository using `git` or download the source via a zip file and extract it to your work folder. Open the solution in Visual Studio and follow the instructions from there.
+To build this benchmark, you must have Visual Studio 2019+ with MSVC build tools installed. You may clone the repository using git or download the source via a zip file and extract it to your work folder. Open the solution in Visual Studio and follow the instructions from there.
